@@ -17,7 +17,11 @@ package main
 import (
 	"context"
 	"encoding/csv"
+	"fmt"
+	"io"
+	"net/http"
 	"os"
+	"strings"
 	"text/template"
 
 	"github.com/google/go-licenses/licenses"
@@ -50,9 +54,11 @@ func init() {
 
 type libraryData struct {
 	Name        string
+	ShortName   string
 	LicenseURL  string
 	LicenseName string
 	Version     string
+	License     string
 }
 
 func reportMain(_ *cobra.Command, args []string) error {
@@ -74,9 +80,11 @@ func reportMain(_ *cobra.Command, args []string) error {
 		}
 		libData := libraryData{
 			Name:        lib.Name(),
+			ShortName:   lib.Name(),
 			Version:     version,
 			LicenseURL:  UNKNOWN,
 			LicenseName: UNKNOWN,
+			License:     UNKNOWN,
 		}
 		if lib.LicensePath != "" {
 			name, _, err := classifier.Identify(lib.LicensePath)
@@ -88,6 +96,29 @@ func reportMain(_ *cobra.Command, args []string) error {
 			url, err := lib.FileURL(context.Background(), lib.LicensePath)
 			if err == nil {
 				libData.LicenseURL = url
+				if strings.Contains(url, "github") {
+					libData.ShortName = strings.Replace(lib.Name(), "github.com/", "", 1)
+					url = strings.Replace(url, "github.com", "raw.githubusercontent.com", 1)
+					url = strings.Replace(url, "blob/", "", 1)
+				}
+				if strings.Contains(url, "github") {
+					resp, err := http.Get(url)
+					if err != nil {
+						klog.Errorf("Error downloading license file from: %s, err: %v", url, err)
+						continue
+					}
+					b, err := io.ReadAll(resp.Body)
+					if err != nil {
+						klog.Errorf("Error reading response body: %s, err: %v", url, err)
+						continue
+					}
+					libData.License = string(b)
+				} else {
+					placeholder := fmt.Sprintf("<PLACEHOLDER_%s>", libData.LicenseName)
+					klog.Errorf("Could not download license file."+
+						" Go to\n %s \n and replace: %s for lib %s", url, placeholder, libData.ShortName)
+					libData.License = placeholder
+				}
 			} else {
 				klog.Warningf("Error discovering license URL: %s", err)
 			}
