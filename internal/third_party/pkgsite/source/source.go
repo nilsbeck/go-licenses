@@ -32,9 +32,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/google/go-licenses/internal/third_party/pkgsite/derrors"
-	"github.com/google/go-licenses/internal/third_party/pkgsite/stdlib"
-	"github.com/google/go-licenses/internal/third_party/pkgsite/version"
+	"github.com/nilsbeck/go-licenses/internal/third_party/pkgsite/derrors"
+	"github.com/nilsbeck/go-licenses/internal/third_party/pkgsite/stdlib"
+	"github.com/nilsbeck/go-licenses/internal/third_party/pkgsite/version"
 	"go.opencensus.io/plugin/ochttp"
 	"go.opencensus.io/trace"
 	"golang.org/x/net/context/ctxhttp"
@@ -416,10 +416,14 @@ func adjustGoRepoInfo(info *Info, modulePath string, isHash bool) {
 // moduleOrRepoPath. It is not when the argument is a module path that uses the
 // go command's general syntax, which ends in a ".vcs" (e.g. ".git", ".hg") that
 // is neither part of the repo nor the suffix. For example, if the argument is
-//   github.com/a/b/c
+//
+//	github.com/a/b/c
+//
 // then repo="github.com/a/b" and relativeModulePath="c"; together they make up the module path.
 // But if the argument is
-//   example.com/a/b.git/c
+//
+//	example.com/a/b.git/c
+//
 // then repo="example.com/a/b" and relativeModulePath="c"; the ".git" is omitted, since it is neither
 // part of the repo nor part of the relative path to the module within the repo.
 func matchStatic(moduleOrRepoPath string) (repo, relativeModulePath string, _ urlTemplates, transformCommit transformCommitFunc, _ error) {
@@ -788,14 +792,13 @@ func fdioTransformCommit(commit string, isHash bool) string {
 //
 // The template variables are:
 //
-// 	• {repo}       - Repository URL with "https://" prefix ("https://example.com/myrepo").
-// 	• {importPath} - Package import path ("example.com/myrepo/mypkg").
-// 	• {commit}     - Tag name or commit hash corresponding to version ("v0.1.0" or "1234567890ab").
-// 	• {dir}        - Path to directory of the package, relative to repo root ("mypkg").
-// 	• {file}       - Path to file containing the identifier, relative to repo root ("mypkg/file.go").
-// 	• {base}       - Base name of file containing the identifier, including file extension ("file.go").
-// 	• {line}       - Line number for the identifier ("41").
-//
+//   - {repo}       - Repository URL with "https://" prefix ("https://example.com/myrepo").
+//   - {importPath} - Package import path ("example.com/myrepo/mypkg").
+//   - {commit}     - Tag name or commit hash corresponding to version ("v0.1.0" or "1234567890ab").
+//   - {dir}        - Path to directory of the package, relative to repo root ("mypkg").
+//   - {file}       - Path to file containing the identifier, relative to repo root ("mypkg/file.go").
+//   - {base}       - Base name of file containing the identifier, including file extension ("file.go").
+//   - {line}       - Line number for the identifier ("41").
 type urlTemplates struct {
 	Repo      string `json:",omitempty"` // Optional URL template for the repository home page, with {repo}. If left empty, a default template "{repo}" is used.
 	Directory string // URL template for a directory, with {repo}, {importPath}, {commit}, {dir}.

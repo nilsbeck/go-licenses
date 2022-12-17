@@ -47,56 +47,56 @@ func TestLibraries(t *testing.T) {
 	}{
 		{
 			desc:       "Detects direct dependency",
-			importPath: "github.com/google/go-licenses/licenses/testdata/direct",
+			importPath: "github.com/nilsbeck/go-licenses/licenses/testdata/direct",
 			wantLibs: []string{
-				"github.com/google/go-licenses/licenses/testdata/direct",
-				"github.com/google/go-licenses/licenses/testdata/indirect",
+				"github.com/nilsbeck/go-licenses/licenses/testdata/direct",
+				"github.com/nilsbeck/go-licenses/licenses/testdata/indirect",
 			},
 		},
 		{
 			desc:       "Detects transitive dependency",
-			importPath: "github.com/google/go-licenses/licenses/testdata",
+			importPath: "github.com/nilsbeck/go-licenses/licenses/testdata",
 			wantLibs: []string{
-				"github.com/google/go-licenses/licenses/testdata",
-				"github.com/google/go-licenses/licenses/testdata/direct",
-				"github.com/google/go-licenses/licenses/testdata/indirect",
+				"github.com/nilsbeck/go-licenses/licenses/testdata",
+				"github.com/nilsbeck/go-licenses/licenses/testdata/direct",
+				"github.com/nilsbeck/go-licenses/licenses/testdata/indirect",
 			},
 		},
 		{
 			desc:       "Ignores a package path",
-			importPath: "github.com/google/go-licenses/licenses/testdata",
+			importPath: "github.com/nilsbeck/go-licenses/licenses/testdata",
 			ignore: []string{
-				"github.com/google/go-licenses/licenses/testdata/direct",
+				"github.com/nilsbeck/go-licenses/licenses/testdata/direct",
 			},
 			wantLibs: []string{
-				"github.com/google/go-licenses/licenses/testdata",
-				"github.com/google/go-licenses/licenses/testdata/indirect",
+				"github.com/nilsbeck/go-licenses/licenses/testdata",
+				"github.com/nilsbeck/go-licenses/licenses/testdata/indirect",
 			},
 		},
 		{
 			desc:         "Detects the dependencies only imported in testing code",
-			importPath:   "github.com/google/go-licenses/licenses/testdata/testlib",
+			importPath:   "github.com/nilsbeck/go-licenses/licenses/testdata/testlib",
 			includeTests: true,
 			wantLibs: []string{
-				"github.com/google/go-licenses/licenses/testdata/testlib",
-				"github.com/google/go-licenses/licenses/testdata/indirect",
+				"github.com/nilsbeck/go-licenses/licenses/testdata/testlib",
+				"github.com/nilsbeck/go-licenses/licenses/testdata/indirect",
 			},
 		},
 		{
 			desc:         "Should not detect the dependencies only imported in testing code",
-			importPath:   "github.com/google/go-licenses/licenses/testdata/testlib",
+			importPath:   "github.com/nilsbeck/go-licenses/licenses/testdata/testlib",
 			includeTests: false,
 			wantLibs: []string{
-				"github.com/google/go-licenses/licenses/testdata/testlib",
+				"github.com/nilsbeck/go-licenses/licenses/testdata/testlib",
 			},
 		},
 		{
 			desc:       "Build tagged package",
-			importPath: "github.com/google/go-licenses/licenses/testdata/tags",
+			importPath: "github.com/nilsbeck/go-licenses/licenses/testdata/tags",
 			goflags:    "-tags=tags",
 			wantLibs: []string{
-				"github.com/google/go-licenses/licenses/testdata/tags",
-				"github.com/google/go-licenses/licenses/testdata/indirect",
+				"github.com/nilsbeck/go-licenses/licenses/testdata/tags",
+				"github.com/nilsbeck/go-licenses/licenses/testdata/indirect",
 			},
 		},
 	} {
