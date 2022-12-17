@@ -22,7 +22,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/google/go-licenses/licenses"
+	"github.com/nilsbeck/go-licenses/licenses"
 	"github.com/otiai10/copy"
 	"github.com/spf13/cobra"
 	"k8s.io/klog/v2"
